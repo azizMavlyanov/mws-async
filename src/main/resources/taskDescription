@@ -1,0 +1,30 @@
+Task 1
+
+We work with mws using their provided java lib. It is done with use of apache http (synchronous).
+Would be great if we can use it asynchronously. When work on task please take into account:
+- we use a play framework and module which interacts with mws is part of a single application.
+  But this module later planned to be extracted to stand-alone service
+- we work in direction to remove remaining blocking code we still have
+
+Task 2:
+
+For handling changes in data we trigger re-index manually (means that we have code injection which trigger indexation on save).
+Because object data is distributed across multiple tables in mysql, and many parts can be saved independently,
+we have multiple such code injections. We think about another approach with a module which will use embed debezium to monitor changes
+from different tables. Example application should provide a simple interface to subscribe for changes.
+We use akka, play framework, akkastreams, cats.. (and of cause standard libs related to them). Feel free to add dependencies
+if you lack some functionality and can justify it (e.g. good: I need debezium in dependencies because we rely on functionality
+implemented by this lib, Bad: I need lift-json because I worked with it before)
+
+Libs files are attached.
+
+Main goal: I expect to see class equivalent to
+com.amazonservices.mws.orders._2013_09_01.MarketplaceWebServiceOrdersClient
+but with methods like:
+
+def getOrder(request: GetOrderRequest): Future[Either[MwsException, GetOrderResponse]]
+
+If you are required to change/replace/remove any other class from libs, feel free to do it.
+Final module, I suppose, will be mixed java code (from libs, maybe partially) + new scala code
+
+Any questions are welcome.
